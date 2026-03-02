@@ -22,7 +22,7 @@
 ### 2. 配置 `config.json`
 在程序根目录下创建 config.json：
 
-
+```json
 {
   "cloudflare": {
     "api_token": "您的 Cloudflare Scoped Token",
@@ -45,6 +45,8 @@
   }
 }
 ```
+
+
 
 ### 3. 运行程序
 -   **Python 运行**：`pip install requests` 然后运行 `python main.py`。
