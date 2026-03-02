@@ -41,8 +41,10 @@
     ],
     "max_ips": 100,
     "top_n": 10,
-    "timeout": 15,
-    "enable_dns_update": true
+    "timeout": 15,"网络请求超时时间 (秒)",
+"enable_dns_update": false,
+    "//_enable_dns_update": "是否自动更新 Cloudflare 域名解析：true=全自动更新；false=仅测速并通知(不改域名)，适合域名未托管在 CF 或只需获取结果的场景。"
+
   }
 }
 ```
