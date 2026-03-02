@@ -17,12 +17,12 @@
 -   获取 [Cloudflare API 令牌](https://dash.cloudflare.com/profile/api-tokens) (需具备 `DNS:Edit` 权限)。
 -   获取 Cloudflare 域名的 `Zone ID`。
 -   准备一个 [Telegram Bot](https://t.me/BotFather) 及其 `Token` 与您的 `Chat ID`。
--   下载本仓库，并确保当前目录下存在 `cfst.exe` (CloudflareSpeedTest)。
+-   下载本仓库，并确保当前目录下存在 `cfst.exe` ([XIU2 / CloudflareSpeedTest](https://github.com/XIU2/CloudflareSpeedTest/releases))。
 
 ### 2. 配置 `config.json`
-在程序根目录下创建 `config.json`：
+在程序根目录下创建 config.json：
 
-```json
+
 {
   "cloudflare": {
     "api_token": "您的 Cloudflare Scoped Token",
