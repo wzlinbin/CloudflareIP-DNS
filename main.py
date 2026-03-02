@@ -230,26 +230,35 @@ def main():
     # 1. 初始化配置
     config = load_config()
     
-    # 2. 先获取当前域名解析的 IP
-    current_ip = get_current_dns_ip(config)
+    # 获取 DNS 更新开关状态，默认为开启
+    enable_dns_update = config.get('settings', {}).get('enable_dns_update', True)
     
-    # 3. 抓取 IP 库（包含当前 IP）
+    # 2. 如果开启了 DNS 更新，则先获取当前解析 IP 参与对比；否则设为 None
+    current_ip = get_current_dns_ip(config) if enable_dns_update else None
+    
+    # 3. 抓取 IP 库（如果开启了对比，则包含当前 IP）
     if fetch_ips(config, current_ip):
         # 4. 运行测速
         best_ip, speed, region = run_speed_test(config)
         
         if best_ip:
-            # 5. 更新 DNS
-            update_status = update_cf_dns(config, best_ip)
-            
-            # 6. 通知结果
-            if update_status == True:
-                msg = f"✅ <b>CF 优选 IP 更新成功</b>\n域名: <code>{config['cloudflare']['dns_name']}</code>\n解析 IP: <b>{best_ip}</b>\n地区码: <b>{region}</b>\n实测速度: <b>{speed} MB/s</b>"
-                push_notification(config, msg)
-            elif update_status == "NO_CHANGE":
-                print("状态: 当前 IP 依然是最优选择，跳过更新。")
+            if enable_dns_update:
+                # 5. 执行自动更新 DNS 逻辑
+                update_status = update_cf_dns(config, best_ip)
+                
+                # 6. 通知结果
+                if update_status == True:
+                    msg = f"✅ <b>CF 优选 IP 更新成功</b>\n域名: <code>{config['cloudflare']['dns_name']}</code>\n解析 IP: <b>{best_ip}</b>\n地区码: <b>{region}</b>\n实测速度: <b>{speed} MB/s</b>"
+                    push_notification(config, msg)
+                elif update_status == "NO_CHANGE":
+                    print("状态: 当前 IP 依然是最优选择，跳过更新。")
+                else:
+                    msg = f"❌ <b>CF 优选 IP 更新失败</b>\n最优 IP: {best_ip}\n原因: API 调用报错，请检查日志或令牌权限。"
+                    push_notification(config, msg)
             else:
-                msg = f"❌ <b>CF 优选 IP 更新失败</b>\n最优 IP: {best_ip}\n原因: API 调用报错，请检查日志或令牌权限。"
+                # 如果禁用了 DNS 更新，仅推送优选结果
+                print("状态: DNS 自动更新已禁用，仅推送优选结果。")
+                msg = f"💡 <b>CF 优选 IP 测速完成</b>\n最优 IP: <b>{best_ip}</b>\n地区码: <b>{region}</b>\n实测速度: <b>{speed} MB/s</b>\n<i>(提示：由于禁用了自动更新域名，请手动修改您的优选信息。)</i>"
                 push_notification(config, msg)
         else:
             print("未能定位到任何有效的最优 IP。")
