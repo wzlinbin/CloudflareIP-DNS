@@ -17,10 +17,10 @@
 -   获取 [Cloudflare API 令牌](https://dash.cloudflare.com/profile/api-tokens) (需具备 `DNS:Edit` 权限)。
 -   获取 Cloudflare 域名的 `Zone ID`。
 -   准备一个 [Telegram Bot](https://t.me/BotFather) 及其 `Token` 与您的 `Chat ID`。
--   下载本仓库，并确保当前目录下存在 `cfst.exe` ([XIU2 / CloudflareSpeedTest](https://github.com/XIU2/CloudflareSpeedTest/releases))。
+-   下载本仓库，并确保当前目录下存在 `cfst.exe` ([CloudflareSpeedTest](https://github.com/XIU2/CloudflareSpeedTest/releases))。
 
 ### 2. 配置 `config.json`
-在程序根目录下创建 config.json：
+在程序根目录下创建 `config.json`：
 
 ```json
 {
@@ -41,12 +41,15 @@
     ],
     "max_ips": 100,
     "top_n": 10,
-    "timeout": 15
+    "timeout": 15,
+    "enable_dns_update": true
   }
 }
 ```
 
-
+-   `enable_dns_update`: **(功能开关)**
+    -   `true`: 全自动运行（抓取 -> 测速 -> 自动更新 Cloudflare 域名解析）。
+    -   `false`: 纯工具模式（抓取 -> 测速 -> Telegram 推送结果，**不修改任何 DNS 记录**）。适用于域名托管在别处或仅需优选 IP 的场景。
 
 ### 3. 运行程序
 -   **Python 运行**：`pip install requests` 然后运行 `python main.py`。
